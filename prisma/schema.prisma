@@ -12,7 +12,9 @@ model Event {
   payload       Json
   status        EventStatus @default(PENDING)
   attempts      Int      @default(0)
-  lastAttemptAt DateTime? 
+  lastAttemptAt DateTime?
+  lastError     String?  @db.Text
+  processedAt   DateTime?
   createdAt     DateTime @default(now())
 }
 
