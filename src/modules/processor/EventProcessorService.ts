@@ -1,6 +1,5 @@
-import { PrismaClient, EventStatus } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { EventStatus } from "@prisma/client";
+import { prisma } from "../../shared/infra/prisma.js";
 
 // Configurações do retry
 const MAX_ATTEMPTS = 5;

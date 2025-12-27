@@ -11,9 +11,13 @@ async function runWorker() {
   }
 }
 
-// roda imediatamente
-runWorker();
+export function startWorker() {
+  console.log("🚀 Worker de processamento de eventos iniciado");
+  
+  // roda imediatamente
+  runWorker();
 
-// roda a cada X segundos
-setInterval(runWorker, INTERVAL_SECONDS * 1000);
+  // roda a cada X segundos
+  setInterval(runWorker, INTERVAL_SECONDS * 1000);
+}
 
