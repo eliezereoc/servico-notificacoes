@@ -1,23 +1,3 @@
-// src/modules/events/EventWorker.ts
-import { EventProcessorService } from './EventProcessorService.js';
-
-const INTERVAL_SECONDS = 10; // roda a cada 10 segundos, ajusta se quiser
-
-async function runWorker() {
-  try {
-    await EventProcessorService.processPendingEvents();
-  } catch (err) {
-    console.error("Erro no worker:", err);
-  }
-}
-
-export function startWorker() {
-  console.log("🚀 Worker de processamento de eventos iniciado");
-  
-  // roda imediatamente
-  runWorker();
-
-  // roda a cada X segundos
-  setInterval(runWorker, INTERVAL_SECONDS * 1000);
-}
+// Wrapper para manter compatibilidade; o worker real agora está em modules/events.
+export { startWorker } from "../events/EventWorker.js";
 
