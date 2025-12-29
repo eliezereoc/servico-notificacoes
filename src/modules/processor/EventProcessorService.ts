@@ -1,9 +1,14 @@
 import { EventStatus } from "@prisma/client";
 import { prisma } from "../../shared/infra/prisma.js";
+import axios, { AxiosError } from "axios";
 
 // Configurações do retry
 const MAX_ATTEMPTS = 5;
 const BASE_DELAY_MS = 1000; // 1 segundo
+const REQUEST_TIMEOUT_MS = 30000; // 30 segundos timeout para requisições
+
+// URL do sistema B (configure no .env)
+const SYSTEM_B_URL = process.env.SYSTEM_B_URL || "http://localhost:4000/api/webhook";
 
 export class EventProcessorService {
   
@@ -57,11 +62,64 @@ export class EventProcessorService {
     }
   }
 
-  // Sua lógica real de processamento
+  // Envia o evento para o sistema B
   private static async handleEvent(event: any) {
-    // Exemplo: processa payload
-    console.log("Processando evento:", event.id, event.payload);
-    // Aqui você pode colocar chamada a API, envio de email, etc.
-    // Se algo der errado, lance um erro: throw new Error("Falha!");
+    console.log(`[EventProcessor] Enviando evento ${event.id} para sistema B...`);
+
+    try {
+      const response = await axios.post(
+        SYSTEM_B_URL,
+        {
+          eventId: event.id,
+          eventType: event.eventType,
+          payload: event.payload,
+          createdAt: event.createdAt
+        },
+        {
+          timeout: REQUEST_TIMEOUT_MS,
+          headers: {
+            "Content-Type": "application/json",
+            // Adicione autenticação se necessário
+            // "Authorization": `Bearer ${process.env.SYSTEM_B_TOKEN}`
+          }
+        }
+      );
+
+      console.log(`[EventProcessor] Evento ${event.id} processado com sucesso. Status: ${response.status}`);
+      
+      // Atualiza o evento com informações de processamento
+      await prisma.event.update({
+        where: { id: event.id },
+        data: { processedAt: new Date() }
+      });
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        
+        // Timeout
+        if (axiosError.code === "ECONNABORTED") {
+          throw new Error(`Timeout ao conectar com sistema B após ${REQUEST_TIMEOUT_MS}ms`);
+        }
+        
+        // Erro de rede/conexão
+        if (axiosError.code === "ECONNREFUSED" || axiosError.code === "ENOTFOUND") {
+          throw new Error(`Falha ao conectar com sistema B: ${axiosError.message}`);
+        }
+        
+        // Resposta com erro do servidor
+        if (axiosError.response) {
+          const status = axiosError.response.status;
+          const data = axiosError.response.data;
+          throw new Error(`Sistema B retornou erro ${status}: ${JSON.stringify(data)}`);
+        }
+        
+        // Erro de requisição sem resposta
+        throw new Error(`Erro na requisição para sistema B: ${axiosError.message}`);
+      }
+      
+      // Outros tipos de erro
+      throw new Error(`Erro inesperado ao processar evento: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 }
