@@ -631,7 +631,7 @@ git push origin feature/sua-feature
 
 ## 👤 Autor
 
-Projeto Serviço de Notificações
+Eliézer de Oliveira
 
 ## 📄 Licença
 
@@ -1451,7 +1451,7 @@ http://localhost:3333
 
 ## 👤 Author
 
-Notifications Service Project
+Eliézer de Oliveira
 
 ## 📄 License
 
