@@ -1,5 +1,13 @@
 # Serviço de Notificações — API Node.js
 
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-Latest-000000?logo=express&logoColor=white)](https://expressjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Latest-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-Latest-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![MySQL](https://img.shields.io/badge/MySQL-5.7+-005C87?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![License](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Active-success.svg)]()
+
 ---
 
 ## 🇧🇷 Versão em Português
